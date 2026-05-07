@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧮 Kubova Matematika</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6c63ff;
+      --primary-dark: #5a52d5;
+      --success: #22c55e;
+      --error: #ef4444;
+      --warn: #f59e0b;
+      --bg-grad: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --card: #ffffff;
+      --text: #1e1b4b;
+      --muted: #6b7280;
+      --radius: 18px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.13);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', -apple-system, sans-serif;
+      background: var(--bg-grad);
+      min-height: 100vh;
+      padding: 16px 12px 40px;
+    }
+
+    .app { max-width: 780px; margin: 0 auto; }
+
+    /* ── HEADER ── */
+    .page-header {
+      text-align: center;
+      padding: 18px 0 14px;
+      color: white;
+    }
+    .page-header .logo { font-size: 2.8rem; line-height: 1; }
+    .page-header h1 {
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 900;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      margin: 4px 0 2px;
+    }
+    .page-header .tagline { font-size: .95rem; opacity: .9; font-weight: 600; }
+
+    /* ── SESSION CHIPS ── */
+    .chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+    .chip {
+      background: rgba(255,255,255,.22);
+      color: white;
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+
+    /* ── WELCOME CARD ── */
+    .welcome {
+      background: white;
+      border-radius: var(--radius);
+      padding: 22px 20px 18px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      margin: 14px 0;
+    }
+    .welcome .wave { font-size: 2rem; }
+    .welcome h2 { font-size: 1.35rem; font-weight: 900; margin: 6px 0 4px; color: var(--text); }
+    .welcome p { color: var(--muted); font-size: .95rem; font-weight: 600; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      color: rgba(255,255,255,.92);
+      font-weight: 800;
+      font-size: .95rem;
+      margin: 18px 0 10px 2px;
+    }
+
+    /* ── CATEGORY GRID ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 520px) { .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 700px) { .cat-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .cat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 18px 12px 14px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .18s, box-shadow .18s;
+      border-top: 4px solid transparent;
+      user-select: none;
+    }
+    .cat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 32px rgba(0,0,0,.18); }
+    .cat-card:active { transform: translateY(-2px); }
+    .cat-card .c-icon { font-size: 2.2rem; margin-bottom: 6px; }
+    .cat-card .c-name { font-weight: 800; font-size: .9rem; color: var(--text); line-height: 1.25; }
+    .cat-card .c-desc { font-size: .72rem; color: var(--muted); margin-top: 3px; font-weight: 600; line-height: 1.3; }
+
+    .cat-card.c0  { border-color: #22d3ee; }
+    .cat-card.c1  { border-color: #f97316; }
+    .cat-card.c2  { border-color: #facc15; }
+    .cat-card.c3  { border-color: #4ade80; }
+    .cat-card.c4  { border-color: #60a5fa; }
+    .cat-card.c5  { border-color: #a78bfa; }
+    .cat-card.c6  { border-color: #fb7185; }
+    .cat-card.c7  { border-color: #34d399; }
+    .cat-card.c8  { border-color: #f472b6; }
+    .cat-card.c9  { border-color: #818cf8; }
+    .cat-card.cmix { border-color: #fbbf24; background: linear-gradient(135deg,#fff 60%,#fffbeb); }
+
+    /* ── QUIZ HEADER ── */
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .back-btn {
+      background: rgba(255,255,255,.22);
+      border: none;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      transition: background .15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,.35); }
+    .quiz-cat-label { color: white; font-weight: 800; font-size: .95rem; }
+    .quiz-counter { color: white; font-weight: 800; font-size: .95rem; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-track {
+      height: 9px;
+      background: rgba(255,255,255,.28);
+      border-radius: 9px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: white;
+      border-radius: 9px;
+      transition: width .35s ease;
+    }
+
+    /* ── QUESTION CARD ── */
+    .q-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 26px 22px 22px;
+      box-shadow: var(--shadow);
+    }
+    .q-label {
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .q-text {
+      font-size: clamp(1.05rem, 3.2vw, 1.35rem);
+      font-weight: 800;
+      line-height: 1.55;
+      color: var(--text);
+      margin-bottom: 22px;
+      white-space: pre-wrap;
+    }
+
+    /* ── HINT ── */
+    .hint-box {
+      background: #fffbeb;
+      border: 1.5px solid #fde68a;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: .82rem;
+      font-weight: 700;
+      color: #92400e;
+      margin-top: 10px;
+    }
+
+    /* ── NUMBER INPUT ── */
+    .num-input {
+      width: 100%;
+      padding: 14px 18px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      border: 3px solid #e5e7eb;
+      border-radius: 13px;
+      outline: none;
+      text-align: center;
+      transition: border-color .18s;
+      color: var(--text);
+    }
+    .num-input:focus { border-color: var(--primary); }
+    .num-input.ok  { border-color: var(--success); background: #f0fdf4; }
+    .num-input.err { border-color: var(--error);   background: #fef2f2; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      background: var(--bg-grad);
+      color: white;
+      border: none;
+      border-radius: 13px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: transform .18s, opacity .18s;
+    }
+    .submit-btn:hover { transform: translateY(-2px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: .45; cursor: default; transform: none; }
+
+    /* ── CHOICES ── */
+    .choices {
+      display: grid;
+      gap: 10px;
+    }
+    .choices.cols2 { grid-template-columns: 1fr 1fr; }
+    .choices.cols1 { grid-template-columns: 1fr; }
+
+    .choice-btn {
+      padding: 15px 12px;
+      background: #f8faff;
+      border: 3px solid #e5e7eb;
+      border-radius: 13px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: var(--primary); background: #eef2ff; }
+    .choice-btn.ok  { border-color: var(--success); background: #f0fdf4; color: #166534; }
+    .choice-btn.err { border-color: var(--error);   background: #fef2f2; color: #991b1b; }
+
+    /* ── FEEDBACK ── */
+    .feedback {
+      margin-top: 16px;
+      border-radius: 14px;
+      padding: 18px 16px;
+      text-align: center;
+      animation: popIn .28s ease;
+    }
+    .feedback.ok  { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border: 2px solid #86efac; }
+    .feedback.err { background: linear-gradient(135deg,#fef2f2,#fee2e2); border: 2px solid #fca5a5; }
+    .fb-icon { font-size: 2.4rem; margin-bottom: 6px; }
+    .fb-title { font-size: 1.15rem; font-weight: 900; color: var(--text); }
+    .fb-sub { font-size: .88rem; font-weight: 700; color: var(--muted); margin-top: 3px; }
+    .fb-correct { margin-top: 10px; font-size: .9rem; font-weight: 700; color: #374151; }
+    .fb-correct strong { color: var(--primary-dark); font-size: 1rem; }
+
+    .next-btn {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 11px 30px;
+      background: var(--bg-grad);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: .95rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: transform .18s;
+    }
+    .next-btn:hover { transform: translateY(-2px); }
+
+    /* ── RESULT ── */
+    .result-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 30px 22px 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      animation: popIn .3s ease;
+    }
+    .result-emoji { font-size: 4rem; }
+    .result-title { font-size: 1.7rem; font-weight: 900; color: var(--text); margin: 10px 0 4px; }
+    .result-score { font-size: 3.2rem; font-weight: 900; color: var(--primary); line-height: 1; margin: 12px 0 4px; }
+    .result-pct { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .result-msg { font-size: .95rem; font-weight: 700; color: var(--muted); line-height: 1.55; margin-bottom: 20px; }
+
+    .summary {
+      text-align: left;
+      max-height: 280px;
+      overflow-y: auto;
+      margin-bottom: 22px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 12px;
+    }
+    .sum-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .sum-row:last-child { border-bottom: none; }
+    .sum-row .q-short { color: #374151; flex: 1; padding-right: 10px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+    .sum-row .ind { font-size: 1.1rem; flex-shrink: 0; }
+
+    .result-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-prim {
+      padding: 13px 28px;
+      background: var(--bg-grad);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: .95rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .btn-sec {
+      padding: 13px 28px;
+      background: white;
+      color: var(--primary);
+      border: 2.5px solid var(--primary);
+      border-radius: 50px;
+      font-size: .95rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .btn-prim:hover, .btn-sec:hover { transform: translateY(-2px); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes popIn {
+      from { transform: scale(.88); opacity: 0; }
+      60%  { transform: scale(1.04); }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%     { transform: translateX(-8px); }
+      75%     { transform: translateX(8px); }
+    }
+    .do-shake { animation: shake .38s ease; }
+
+    /* ── CONFETTI (perfect score) ── */
+    .confetti-wrap { position: relative; overflow: visible; }
+    .confetti-wrap::before {
+      content: '🎊 🎉 ⭐ 🏆 🎊 🎉 ⭐';
+      display: block;
+      font-size: 1.5rem;
+      letter-spacing: 4px;
+      animation: drift 2s ease-in-out infinite alternate;
+      margin-bottom: 8px;
+    }
+    @keyframes drift {
+      from { transform: translateY(0) rotate(-3deg); }
+      to   { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    /* ── CALC CHECK SCREEN ── */
+    .calc-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      animation: popIn .28s ease;
+      margin-top: 14px;
+    }
+    .calc-card .big-q { font-size: 3.2rem; margin-bottom: 12px; }
+    .calc-card h2 { font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+    .calc-card p  { color: var(--muted); font-weight: 700; font-size: .95rem; line-height: 1.5; margin-bottom: 24px; }
+    .calc-btns { display: flex; flex-direction: column; gap: 12px; }
+    .calc-btn-yes {
+      padding: 16px;
+      background: #fef9c3;
+      border: 2.5px solid #fde047;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      color: #713f12;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .calc-btn-yes:hover { transform: translateY(-2px); }
+    .calc-btn-no {
+      padding: 16px;
+      background: var(--bg-grad);
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      color: white;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .calc-btn-no:hover { transform: translateY(-2px); }
+    .calc-warning {
+      background: #fef2f2;
+      border: 2px solid #fca5a5;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #991b1b;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* ── CALC BADGE (during quiz) ── */
+    .calc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,.22);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: .8rem;
+      font-weight: 800;
+      margin-top: 6px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 420px) {
+      body { padding: 10px 8px 36px; }
+      .q-card { padding: 20px 14px 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════ */
+const rnd  = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const fmt  = n => Number(n).toLocaleString('cs-CZ');
+
+function normalize(s) {
+  s = String(s).trim().replace(/\s/g, '').replace(',', '.');
+  const n = parseFloat(s);
+  if (!isNaN(n) && Number.isInteger(n)) return String(Math.round(n));
+  return s.toLowerCase();
+}
+
+/* ═══════════════════════════════════════════════
+   MESSAGES
+═══════════════════════════════════════════════ */
+const PRAISE = [
+  { i:'🎉', t:'Správně!',        s:'Jsi chytřejší než moje kalkulačka!' },
+  { i:'🧠', t:'Výborně!',        s:'Einstein by ti záviděl!' },
+  { i:'🌟', t:'Perfekt!',        s:'Učitelka omdlí štěstím!' },
+  { i:'🚀', t:'Skvělé!',         s:'Tvůj mozek je na raketovém palivu!' },
+  { i:'🏆', t:'Hurááá!',         s:'Jsi matematik roku!' },
+  { i:'😎', t:'Jo jo jo!',        s:'To je Kuba – matematický génius!' },
+  { i:'💥', t:'Bomba!',          s:'(ta hodná, matematická)' },
+  { i:'🦄', t:'Neskutečné!',     s:'Jednorožec matematiky!' },
+  { i:'🎯', t:'Přesně v černém!',s:'Mířil jsi perfektně!' },
+  { i:'🐱', t:'Meow!',           s:'Dokonce kočky z tebe mají radost!' },
+  { i:'🔥', t:'V plamenech!',    s:'Matematický plamenomet!' },
+  { i:'⚡', t:'Blesk z čistého nebe!', s:'Rychlý a správný!' },
+  { i:'🥇', t:'Zlatá medaile!',  s:'Olimpionik matematiky!' },
+  { i:'🎸', t:'Rocková odpověď!',s:'Matematický rockstar!' },
+  { i:'🍕', t:'Správně!',        s:'Zasloužíš si pizzu!' },
+  { i:'🤖', t:'Přesnost robota!',s:'Ale jsi přitom člověk. Nebo?' },
+  { i:'👾', t:'Levelup!',        s:'+10 bodů do matematiky!' },
+  { i:'🦁', t:'Lvičí odpověď!',  s:'Síla i mozek dohromady!' },
+];
+
+const WRONG = [
+  { i:'🙈', t:'Ouha!',                 s:'Zkus to znovu, mozku!' },
+  { i:'🤔', t:'Hmm...',                s:'Blízko, ale doutník nedostaneš!' },
+  { i:'🙅', t:'Nope!',                 s:'Ale nevzdávej se, šampione!' },
+  { i:'😅', t:'Podporní se...',        s:'Zkus to znovu!' },
+  { i:'🐛', t:'Chybička se vloudila!', s:'Vyžeň ji!' },
+  { i:'🤦', t:'Skoro!',                s:'Mozek se zahřívá. Příště jo!' },
+  { i:'🎭', t:'Dramatická odpověď...',  s:'Správná je níže.' },
+  { i:'🦕', t:'Dino výsledek!',        s:'Vymřelý. Zkus správný!' },
+  { i:'😬', t:'Eeeh...',               s:'Zkus to ještě jednou!' },
+  { i:'🙃', t:'Obráceně!',             s:'Otočit a zkusit znovu!' },
+  { i:'🃏', t:'Joker tah!',            s:'Tentokrát to nevyšlo.' },
+  { i:'🌧', t:'Bouřková odpověď.',     s:'Po dešti slunce – příště správně!' },
+];
+
+/* ═══════════════════════════════════════════════
+   QUESTION GENERATORS
+═══════════════════════════════════════════════ */
+
+// 1 ── Zápis čísel
+function genZapis() {
+  const t = rnd(0, 2);
+  if (t === 0) {
+    // Která cifra je na místě X
+    const d = [rnd(1,9), rnd(0,9), rnd(0,9), rnd(0,9), rnd(0,9), rnd(0,9)];
+    const num = parseInt(d.join(''));
+    const pos = pick([
+      { name:'jednotek',       val: d[5] },
+      { name:'desítek',        val: d[4] },
+      { name:'stovek',         val: d[3] },
+      { name:'tisíců',         val: d[2] },
+      { name:'desetitisíců',   val: d[1] },
+      { name:'statisíců',      val: d[0] },
+    ]);
+    return { text:`V čísle ${fmt(num)} – jaká cifra je na místě ${pos.name}?`, ans: String(pos.val), type:'num' };
+  }
+  if (t === 1) {
+    // Porovnej dvě čísla
+    const a = rnd(10000, 999999);
+    let b = rnd(10000, 999999);
+    while (b === a) b = rnd(10000, 999999);
+    const sign = a > b ? '>' : (a < b ? '<' : '=');
+    return {
+      text:`Doplň správné znaménko:\n${fmt(a)}  ___  ${fmt(b)}`,
+      ans: sign, type:'choice', choices:['>', '<', '='], cols:3
+    };
+  }
+  // Kolik číslic
+  const nums = [rnd(1000,9999), rnd(10000,99999), rnd(100000,999999)];
+  const n = pick(nums);
+  const ans = String(n).length;
+  const opts = ['4','5','6','7'].filter(x => x !== String(ans));
+  const choices = [String(ans), opts[0], opts[1]].sort(() => Math.random()-.5);
+  return { text:`Kolik číslic má číslo ${fmt(n)}?`, ans: String(ans), type:'choice', choices, cols:3 };
+}
+
+// 2 ── Zaokrouhlování
+function genZaokr() {
+  const roundTos = [10, 100, 1000, 10000, 100000];
+  const r = pick(roundTos);
+  const ranges = { 10:[100,9999], 100:[1000,99999], 1000:[10000,999999], 10000:[100000,999999], 100000:[100001,899999] };
+  const [lo, hi] = ranges[r];
+  const n = rnd(lo, hi);
+  const ans = Math.round(n / r) * r;
+  const names = { 10:'desítek', 100:'stovek', 1000:'tisíců', 10000:'desetitisíců', 100000:'statisíců' };
+  return { text:`Zaokrouhli číslo ${fmt(n)} na ${names[r]}:`, ans: String(ans), type:'num' };
+}
+
+// 3 ── Násobilka
+function genNasob() {
+  if (rnd(0,1) === 0) {
+    const a = rnd(2,10), b = rnd(2,10);
+    return { text:`${a} × ${b} = ?`, ans: String(a*b), type:'num' };
+  }
+  const b = rnd(2,10), c = rnd(2,10);
+  return { text:`${b*c} ÷ ${b} = ?`, ans: String(c), type:'num' };
+}
+
+// 4 ── Početní operace (pořadí)
+function genOp() {
+  const t = rnd(0,3);
+  if (t === 0) {
+    const a = rnd(10,50), b = rnd(2,9), c = rnd(2,9);
+    return { text:`${a} + ${b} × ${c} = ?`, ans: String(a + b*c), type:'num', hint:'💡 Nejdřív násobení, pak sčítání!' };
+  }
+  if (t === 1) {
+    const b = rnd(2,6), c = rnd(2,6), extra = rnd(5,30);
+    const a = b*c + extra;
+    return { text:`${a} − ${b} × ${c} = ?`, ans: String(a - b*c), type:'num', hint:'💡 Nejdřív násobení, pak odečítání!' };
+  }
+  if (t === 2) {
+    const a = rnd(5,20), b = rnd(5,20), c = rnd(2,9);
+    return { text:`(${a} + ${b}) × ${c} = ?`, ans: String((a+b)*c), type:'num', hint:'💡 Nejdřív závorka!' };
+  }
+  const a = rnd(2,9), b = rnd(2,9), c = rnd(2,9), d = rnd(2,9);
+  return { text:`${a} × ${b} + ${c} × ${d} = ?`, ans: String(a*b + c*d), type:'num', hint:'💡 Spočítej obě násobení zvlášť, pak sečti!' };
+}
+
+// 5 ── Násobení víceciferné
+function genNasobVic() {
+  if (rnd(0,1) === 0) {
+    const a = rnd(100,9999), b = rnd(2,9);
+    return { text:`${fmt(a)} × ${b} = ?`, ans: String(a*b), type:'num' };
+  }
+  const a = rnd(12,999), b = rnd(11,49);
+  return { text:`${fmt(a)} × ${b} = ?`, ans: String(a*b), type:'num' };
+}
+
+// 6 ── Písemné dělení
+function genDeleni() {
+  if (rnd(0,1) === 0) {
+    const b = rnd(2,9), res = rnd(10,999);
+    return { text:`${fmt(b*res)} ÷ ${b} = ?`, ans: String(res), type:'num' };
+  }
+  const b = rnd(11,25), res = rnd(10,99);
+  return { text:`${fmt(b*res)} ÷ ${b} = ?`, ans: String(res), type:'num' };
+}
+
+// 7 ── Sudá / Lichá
+function genSudaLicha() {
+  const n = rnd(1, 999999);
+  return {
+    text:`Je číslo ${fmt(n)} sudé nebo liché?`,
+    ans: n%2===0 ? 'sudé' : 'liché',
+    type:'choice', choices:['sudé','liché'], cols:2
+  };
+}
+
+// 8 ── Zvětšení / Zmenšení
+function genZmena() {
+  const t = rnd(0,3);
+  if (t === 0) {
+    const a = rnd(100,9999), o = rnd(10,999);
+    return { text:`Zvětši číslo ${fmt(a)} o ${fmt(o)}:`, ans: String(a+o), type:'num', hint:'💡 zvětšit o = přičíst' };
+  }
+  if (t === 1) {
+    const o = rnd(10,500), a = o + rnd(100,999);
+    return { text:`Zmenši číslo ${fmt(a)} o ${fmt(o)}:`, ans: String(a-o), type:'num', hint:'💡 zmenšit o = odečíst' };
+  }
+  if (t === 2) {
+    const a = rnd(10,999), k = rnd(2,9);
+    return { text:`Zvětši číslo ${fmt(a)} ${k}krát:`, ans: String(a*k), type:'num', hint:'💡 zvětšit kolikrát = vynásobit' };
+  }
+  const k = rnd(2,9), res = rnd(10,999);
+  return { text:`Zmenši číslo ${fmt(k*res)} ${k}krát:`, ans: String(res), type:'num', hint:'💡 zmenšit kolikrát = vydělit' };
+}
+
+// 9 ── Číselné řady
+function genRada() {
+  const t = rnd(0,3);
+  if (t === 0) {
+    const s = rnd(1,100), st = rnd(2,20);
+    const seq = [s, s+st, s+2*st, s+3*st, s+4*st];
+    return { text:`Co přijde dál?\n${seq.slice(0,4).join(', ')},  ???`, ans: String(seq[4]), type:'num', hint:`💡 Jaký je rozdíl mezi čísly?` };
+  }
+  if (t === 1) {
+    const st = rnd(2,15), end = rnd(1,50);
+    const s = end + st*4;
+    const seq = [s, s-st, s-2*st, s-3*st, s-4*st];
+    return { text:`Co přijde dál?\n${seq.slice(0,4).join(', ')},  ???`, ans: String(seq[4]), type:'num', hint:'💡 Čísla klesají. O kolik?' };
+  }
+  if (t === 2) {
+    const s = rnd(1,10);
+    const seq = [s, s*2, s*4, s*8, s*16];
+    return { text:`Co přijde dál?\n${seq.slice(0,4).join(', ')},  ???`, ans: String(seq[4]), type:'num', hint:'💡 Čísla se násobí!' };
+  }
+  const a = rnd(1,10), b = rnd(1,10);
+  const seq = [a, b, a+b, a+2*b, 2*a+3*b];
+  return { text:`Co přijde dál?\n${seq.slice(0,4).join(', ')},  ???`, ans: String(seq[4]), type:'num', hint:'💡 Zkus sečíst dvě předchozí čísla!' };
+}
+
+// 10 ── Slovní úlohy
+function genSlovni() {
+  const t = rnd(0, 9);
+  if (t === 0) {
+    const cena = rnd(50,500), ks = rnd(2,8);
+    return { text:`Jedna knížka stojí ${cena} Kč. Kolik zaplatíš za ${ks} stejné knížky?`, ans: String(cena*ks), type:'num' };
+  }
+  if (t === 1) {
+    const total = rnd(200,1000), extra = rnd(50,400);
+    const mel = total + extra;
+    return { text:`Kuba měl ${mel} Kč. Koupil si věc za ${total} Kč. Kolik Kč mu zbylo?`, ans: String(mel-total), type:'num' };
+  }
+  if (t === 2) {
+    const den = rnd(10,50), dni = rnd(5,14);
+    return { text:`Kuba cvičí každý den ${den} příkladů. Kolik příkladů procvičí za ${dni} dní?`, ans: String(den*dni), type:'num' };
+  }
+  if (t === 3) {
+    const perBag = rnd(4,10), bags = rnd(5,20);
+    return { text:`Maminka koupila ${perBag*bags} jablek. Do každého košíku dala ${perBag} jablek. Kolik košíků potřebovala?`, ans: String(bags), type:'num' };
+  }
+  if (t === 4) {
+    const speed = rnd(50,150), time = rnd(2,6);
+    return { text:`Auto jede rychlostí ${speed} km/h. Jakou vzdálenost ujede za ${time} hodiny?`, ans: String(speed*time), type:'num' };
+  }
+  if (t === 5) {
+    const a = rnd(100,500), b = rnd(100,500), c = rnd(100,500);
+    return { text:`Ve třídě je ${a} knih, ${b} sešitů a ${c} pastelek. Kolik pomůcek je celkem?`, ans: String(a+b+c), type:'num' };
+  }
+  if (t === 6) {
+    const k = rnd(3,8), one = rnd(10,200);
+    return { text:`${fmt(one*k)} Kč rozdělíme rovnoměrně mezi ${k} dětí. Kolik dostane každé dítě?`, ans: String(one), type:'num' };
+  }
+  if (t === 7) {
+    const radky = rnd(4,12), sl = rnd(4,12);
+    return { text:`Na hřišti stojí ${radky} řad stromů. V každé řadě je ${sl} stromů. Kolik stromů je celkem?`, ans: String(radky*sl), type:'num' };
+  }
+  if (t === 8) {
+    const k = rnd(2,5), friend = rnd(20,100);
+    return { text:`Kuba nasbíral ${k*friend} kaštanů. To je ${k}krát více než jeho kamarád. Kolik kaštanů nasbíral kamarád?`, ans: String(friend), type:'num', hint:`💡 ${fmt(k*friend)} ÷ ${k}` };
+  }
+  // t === 9
+  const mel = rnd(300,800), dostal = rnd(100,400), utratil = rnd(50,300);
+  const zbylo = mel + dostal - utratil;
+  if (zbylo < 0) return genSlovni();
+  return { text:`Kuba měl ${mel} Kč. Babička mu dala ${dostal} Kč. Pak utratil ${utratil} Kč. Kolik Kč mu zbylo?`, ans: String(zbylo), type:'num' };
+}
+
+/* ═══════════════════════════════════════════════
+   CATEGORIES
+═══════════════════════════════════════════════ */
+const CATS = [
+  { id:'zapis',    name:'Zápis čísel',          icon:'🔢', desc:'Číslice, místa, porovnávání',  gen: genZapis    },
+  { id:'zaokr',    name:'Zaokrouhlování',        icon:'🎯', desc:'Na desítky, stovky, tisíce…',  gen: genZaokr    },
+  { id:'nasob',    name:'Násobilka',             icon:'✖️', desc:'Malá násobilka 2–10',           gen: genNasob    },
+  { id:'op',       name:'Početní operace',       icon:'🧮', desc:'Pořadí operací & závorky',     gen: genOp       },
+  { id:'nasobvic', name:'Násobení',              icon:'💪', desc:'Víceciferné násobení',          gen: genNasobVic },
+  { id:'deleni',   name:'Dělení',                icon:'➗', desc:'Písemné dělení',                gen: genDeleni   },
+  { id:'sudlicha', name:'Sudá / Lichá',          icon:'🔄', desc:'Sudé nebo liché číslo?',       gen: genSudaLicha},
+  { id:'zmena',    name:'Zvětšení / Zmenšení',  icon:'📏', desc:'O kolik a kolikrát',            gen: genZmena    },
+  { id:'rada',     name:'Číselné řady',          icon:'🔮', desc:'Co přijde dál?',               gen: genRada     },
+  { id:'slovni',   name:'Slovní úlohy',          icon:'📝', desc:'Příklady z běžného života',    gen: genSlovni   },
+];
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+const S = {
+  screen: 'home',   // 'home' | 'calccheck' | 'quiz' | 'result'
+  cat: null,
+  pendingCatId: null,
+  useCalc: false,
+  qs: [],
+  qi: 0,
+  score: 0,
+  answers: [],
+  feedback: false,
+  lastOk: false,
+  session: { total: 0, correct: 0 },
+};
+
+/* ═══════════════════════════════════════════════
+   QUIZ LOGIC
+═══════════════════════════════════════════════ */
+function startQuiz(catId) {
+  let cat;
+  if (catId === 'mix') {
+    cat = { id:'mix', name:'Mix všeho', icon:'🎲', gen: () => pick(CATS).gen() };
+  } else {
+    cat = CATS.find(c => c.id === catId);
+  }
+  S.cat = cat;
+  S.qs = Array.from({ length: 10 }, () => cat.gen());
+  S.qi = 0; S.score = 0; S.answers = []; S.feedback = false;
+  S.screen = 'quiz';
+  render();
+}
+
+function checkAnswer(val) {
+  if (S.feedback) return;
+  const q = S.qs[S.qi];
+  const ok = normalize(val) === normalize(q.ans);
+  S.lastOk = ok;
+  S.feedback = true;
+  S.answers.push({ ok, user: val, correct: q.ans, text: q.text });
+  if (ok) S.score++;
+  S.session.total++;
+  if (ok) S.session.correct++;
+  render();
+}
+
+function nextQ() {
+  S.feedback = false;
+  S.qi++;
+  if (S.qi >= S.qs.length) S.screen = 'result';
+  render();
+}
+
+/* ═══════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════ */
+function render() {
+  const app = document.getElementById('app');
+  if (S.screen === 'home')      app.innerHTML = renderHome();
+  if (S.screen === 'quiz')      app.innerHTML = renderQuiz();
+  if (S.screen === 'result')    app.innerHTML = renderResult();
+  bind();
+}
+
+/* ── Calc Check ── */
+function renderCalcCheck() {
+  const cat = S.pendingCatId === 'mix'
+    ? { name:'Mix všeho', icon:'🎲' }
+    : CATS.find(c => c.id === S.pendingCatId);
+  return `
+    <div class="page-header">
+      <div class="logo">${cat.icon}</div>
+      <h1>${cat.name}</h1>
+    </div>
+    <div class="calc-card">
+      <div class="big-q">🧮</div>
+      <h2>Budeš používat kalkulačku?</h2>
+      <p>Při procvičování ji klidně použít můžeš.<br>
+         Při výběrovém řízení ale kalkulačka <strong>povolena není</strong> – proto se ji snaž nepotřebovat!</p>
+      <div class="calc-btns">
+        <button class="calc-btn-no" data-a="calc-no">
+          💪 Ne, zvládnu to hlavou!
+        </button>
+        <button class="calc-btn-yes" data-a="calc-yes">
+          🧮 Ano, použiju kalkulačku
+        </button>
+      </div>
+      <div class="calc-warning">
+        ⚠️ Připomenutí: Na skutečném výběrovém řízení kalkulačku mít <strong>nebudeš</strong>. Zkus to bez ní, ať si na to zvykneš!
+      </div>
+    </div>`;
+}
+
+/* ── Home ── */
+function renderHome() {
+  const { total, correct } = S.session;
+  const pct = total > 0 ? Math.round(correct/total*100) : null;
+  return `
+    <div class="page-header">
+      <div class="logo">🧮</div>
+      <h1>Kubova Matematika</h1>
+      ${total > 0 ? `<div class="chips">
+        <span class="chip">✅ ${correct} správně</span>
+        <span class="chip">❌ ${total-correct} špatně</span>
+        <span class="chip">📊 ${pct}%</span>
+      </div>` : ''}
+    </div>
+
+    <div class="welcome">
+      <div class="wave">👋</div>
+      <h2>Ahoj, Kubo!</h2>
+      <p>Vyber si okruh a procvičuj.<br>Ty na tu matematickou třídu určitě dostaneš! 💪</p>
+    </div>
+
+    <div class="section-label">📚 Okruhy k procvičování:</div>
+    <div class="cat-grid">
+      ${CATS.map((c,i) => `
+        <div class="cat-card c${i}" data-a="start" data-id="${c.id}">
+          <div class="c-icon">${c.icon}</div>
+          <div class="c-name">${c.name}</div>
+          <div class="c-desc">${c.desc}</div>
+        </div>`).join('')}
+      <div class="cat-card cmix" data-a="start" data-id="mix">
+        <div class="c-icon">🎲</div>
+        <div class="c-name">Mix všeho</div>
+        <div class="c-desc">Náhodné otázky ze všech okruhů</div>
+      </div>
+    </div>`;
+}
+
+/* ── Quiz ── */
+function renderQuiz() {
+  const q = S.qs[S.qi];
+  const pct = (S.qi / S.qs.length) * 100;
+  return `
+    <div class="quiz-top">
+      <button class="back-btn" data-a="home">← Zpět</button>
+      <div class="quiz-cat-label">${S.cat.icon} ${S.cat.name}</div>
+      <div class="quiz-counter">${S.qi+1} / ${S.qs.length}</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="q-card">
+      <div class="q-label">Otázka ${S.qi+1}</div>
+      <div class="q-text">${q.text}</div>
+      ${q.type === 'choice' ? renderChoices(q) : renderInput(q)}
+      ${q.hint && !S.feedback ? `<div class="hint-box">${q.hint}</div>` : ''}
+      ${S.feedback ? renderFeedback(q) : ''}
+    </div>`;
+}
+
+function renderInput(q) {
+  if (S.feedback) {
+    const last = S.answers[S.answers.length-1];
+    return `<input class="num-input ${last.ok?'ok':'err'}" type="text"
+      value="${last.user}" readonly inputmode="numeric">
+      <button class="submit-btn" disabled>Zkontrolováno ✓</button>`;
+  }
+  return `<input class="num-input" id="ainput" type="text"
+    placeholder="Zadej odpověď…" autocomplete="off" inputmode="numeric">
+    <button class="submit-btn" id="sbtn" data-a="submit">Zkontrolovat ✓</button>`;
+}
+
+function renderChoices(q) {
+  const colClass = (q.cols||2) === 3 ? 'cols3' : (q.cols===1 ? 'cols1' : 'cols2');
+  const last = S.feedback ? S.answers[S.answers.length-1] : null;
+  const btns = q.choices.map(c => {
+    let cls = '';
+    if (last) cls = c === q.ans ? 'ok' : (c === last.user ? 'err' : '');
+    const pre = last ? (c === q.ans ? '✅ ' : (c === last.user ? '❌ ' : '')) : '';
+    return `<button class="choice-btn ${cls}" data-a="choice" data-v="${c}" ${last?'disabled':''}>${pre}${c}</button>`;
+  }).join('');
+  // for 3 cols, use a simple inline flex workaround
+  const style = q.cols===3 ? 'display:flex;gap:10px;' : '';
+  return `<div class="choices ${colClass}" style="${style}">${btns}</div>`;
+}
+
+function renderFeedback(q) {
+  const { ok, correct } = S.answers[S.answers.length-1];
+  const m = ok ? pick(PRAISE) : pick(WRONG);
+  let corrHtml = '';
+  if (!ok && q.type === 'num') {
+    const n = parseInt(correct);
+    const disp = isNaN(n) ? correct : fmt(n);
+    corrHtml = `<div class="fb-correct">Správná odpověď: <strong>${disp}</strong></div>`;
+  }
+  return `
+    <div class="feedback ${ok?'ok':'err'}">
+      <div class="fb-icon">${m.i}</div>
+      <div class="fb-title">${m.t}</div>
+      <div class="fb-sub">${m.s}</div>
+      ${corrHtml}
+      <button class="next-btn" data-a="next">
+        ${S.qi+1 < S.qs.length ? 'Další otázka →' : 'Zobrazit výsledky 🏆'}
+      </button>
+    </div>`;
+}
+
+/* ── Result ── */
+function renderResult() {
+  const sc = S.score, tot = S.qs.length;
+  const pct = Math.round(sc/tot*100);
+  let emoji, title, msg;
+  if (sc === 10) {
+    emoji = '👑'; title = 'ABSOLUTNÍ PERFEKCE!';
+    msg = 'Kuba = matematický bůh! Výběrové řízení bude hračka. Einstein volá, chce autogram. 🤝';
+  } else if (sc >= 8) {
+    emoji = '🌟'; title = 'Skvělý výsledek!';
+    msg = 'Výborná práce! Ještě trochu pilovat a jsi neporazitelný. Máš na to! 💪';
+  } else if (sc >= 6) {
+    emoji = '👍'; title = 'Dobrá práce!';
+    msg = 'Solidní základ! Procvičuj dál, zejména okruhy, kde ses zasekl. Jde to! 📚';
+  } else if (sc >= 4) {
+    emoji = '💙'; title = 'Jde to!';
+    msg = 'Nevzdávej se! I největší matematici se museli učit. Zkus to znovu! 🔄';
+  } else {
+    emoji = '🤗'; title = 'Procvičuj dál!';
+    msg = 'Každý musí někde začít. Zkus konkrétní okruhy a uvidíš, jak se to zlepší! ⭐';
+  }
+  const perf = sc === 10 ? 'confetti-wrap' : '';
+  return `
+    <div class="page-header">
+      <div class="logo">🏁</div>
+      <h1>Výsledky</h1>
+    </div>
+    <div class="result-card">
+      <div class="${perf}">
+        <div class="result-emoji">${emoji}</div>
+      </div>
+      <div class="result-title">${title}</div>
+      <div class="result-score">${sc} / ${tot}</div>
+      <div class="result-pct" style="color:${pct>=60?'#16a34a':'#dc2626'}">${pct}%</div>
+      <div class="result-msg">${msg}</div>
+      <div class="summary">
+        ${S.answers.map((a,i) => {
+          const short = S.qs[i].text.replace(/\n/g,' ').replace(/\s+/g,' ');
+          const label = short.length>48 ? short.slice(0,48)+'…' : short;
+          return `<div class="sum-row">
+            <span class="q-short">${i+1}. ${label}</span>
+            <span class="ind">${a.ok ? '✅' : '❌'}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="result-btns">
+        <button class="btn-prim" data-a="retry">🔄 Zkusit znovu</button>
+        <button class="btn-sec"  data-a="home">🏠 Domů</button>
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════
+   EVENTS
+═══════════════════════════════════════════════ */
+function bind() {
+  document.querySelectorAll('[data-a]').forEach(el => el.addEventListener('click', onAction));
+  const inp = document.getElementById('ainput');
+  if (inp) {
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') doSubmit(); });
+    setTimeout(() => inp.focus(), 80);
+  }
+}
+
+function onAction(e) {
+  const a = e.currentTarget.dataset.a;
+  if (a === 'start')  startQuiz(e.currentTarget.dataset.id);
+  if (a === 'home')   { S.screen = 'home'; render(); }
+  if (a === 'retry')  startQuiz(S.cat.id);
+  if (a === 'next')     nextQ();
+  if (a === 'submit')   doSubmit();
+  if (a === 'choice')   checkAnswer(e.currentTarget.dataset.v);
+}
+
+function doSubmit() {
+  if (S.feedback) return;
+  const inp = document.getElementById('ainput');
+  if (!inp || !inp.value.trim()) {
+    inp && inp.classList.add('do-shake');
+    setTimeout(() => inp && inp.classList.remove('do-shake'), 400);
+    return;
+  }
+  checkAnswer(inp.value.trim());
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+render();
+</script>
+</body>
+</html>
